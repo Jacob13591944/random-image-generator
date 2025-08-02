@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Image Generator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            /* Using a Google-inspired blue as the main background color */
+            background-color: #4285F4;
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-4">
+    <div class="bg-white/10 backdrop-blur-lg rounded-2xl p-8 shadow-2xl max-w-lg w-full text-center">
+        <!-- Main title -->
+        <h1 class="text-3xl font-bold text-white mb-6">
+            Random Image
+        </h1>
+
+        <!-- Image display area -->
+        <div class="bg-white/20 p-2 rounded-xl mb-8 flex items-center justify-center min-h-[250px] overflow-hidden">
+            <img id="random-image" src="https://placehold.co/600x400/4285F4/FFFFFF?text=Click+to+generate" 
+                 alt="Randomly generated image" 
+                 class="w-full h-auto rounded-lg transition-all duration-300 ease-in-out">
+        </div>
+
+        <!-- Button to generate a new image -->
+        <button id="generate-btn" class="w-full py-4 text-xl font-bold text-white rounded-xl shadow-lg
+               /* Google logo colors: red to yellow gradient */
+               bg-gradient-to-r from-[#DB4437] to-[#F4B400]
+               hover:from-[#F4B400] hover:to-[#DB4437]
+               focus:outline-none focus:ring-4 focus:ring-white/50 transition-all duration-300">
+            Get Random Image
+        </button>
+    </div>
+
+    <script>
+        // Get references to the HTML elements
+        const randomImage = document.getElementById('random-image');
+        const generateBtn = document.getElementById('generate-btn');
+
+        // Initial placeholder image URL
+        const placeholderImageUrl = "https://placehold.co/600x400/4285F4/FFFFFF?text=Loading...";
+
+        /**
+         * Fetches a new random image from a public image service using a more reliable method.
+         */
+        function getRandomImage() {
+            // Display a loading placeholder image while fetching the new one
+            randomImage.src = placeholderImageUrl;
+            
+            // We'll use the 'Image' object's onload/onerror events for a more direct check
+            const newImage = new Image();
+
+            newImage.onload = () => {
+                randomImage.src = newImage.src;
+                console.log("Image loaded successfully:", newImage.src);
+            };
+
+            newImage.onerror = () => {
+                console.error("Failed to load image from:", newImage.src);
+                randomImage.src = `https://placehold.co/600x400/DB4437/FFFFFF?text=Error`;
+            };
+
+            // Use the simplest and most reliable URL for a random image from picsum.photos
+            // Adding a random query parameter is a simple way to bust the browser cache.
+            const newImageUrl = `https://picsum.photos/600/400?random=${new Date().getTime()}`;
+            
+            console.log("Requesting new image from:", newImageUrl);
+            newImage.src = newImageUrl;
+        }
+
+        // Add a click event listener to the button
+        generateBtn.addEventListener('click', getRandomImage);
+
+        // Trigger a random image generation on initial page load
+        window.addEventListener('load', getRandomImage);
+    </script>
+</body>
+</html>
